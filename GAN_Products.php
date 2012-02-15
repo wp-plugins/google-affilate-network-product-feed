@@ -1,9 +1,48 @@
 <?php
+/**
+  * Plugin Name: Google Affiliate Network Product Feed
+  * Plugin URI: http://http://www.deepsoft.com/GAN-Product
+  * Description: A Plugin to import Google Affiliate Network Product Feeds
+  * Version: 0.0
+  * Author: Robert Heller
+  * Author URI: http://www.deepsoft.com/
+  * License: GPL2
+ *
+ *  Google Affiliate Network Procuct Feed plugin
+ *  Copyright (C) 2011,2012  Robert Heller D/B/A Deepwoods Software
+ *			51 Locke Hill Road
+ *			Wendell, MA 01379-9728
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *
+ */
 
-/* Load our constants */
-require_once(dirname(__FILE__) . "/GAN_Constants.php");
-/* Load Database code */
-require_once(dirname(__FILE__) . "/GAN_Database.php");
+/* Constants */
+
+define('GANPF_PLUGIN_NAME', 'GANPF_Plugin'); /* Name of the plugin */
+define('GANPF_DIR', dirname(__FILE__));    /* The Plugin directory */
+define('GANPF_VERSION', '0.0');          /* The Plug in version */
+/* Plug in display name */
+define('GANPF_DISPLAY_NAME', 'Google Affiliate Network Product Feed Plugin');
+/* Base URL of the plug in */
+define('GANPF_PLUGIN_URL', get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(GANPF_DIR));
+/* URL of the Plugin's CSS dir */
+define('GANPF_PLUGIN_CSS_URL', GANPF_PLUGIN_URL . '/css');
+/* URL of the Plugin's image dir */
+define('GANPF_PLUGIN_IMAGE_URL', GANPF_PLUGIN_URL . '/images');
 
 require_once (dirname(__FILE__) . '/../../../wp-admin/includes/class-wp-list-table.php');
 
@@ -25,19 +64,19 @@ class GAN_Products_List extends WP_List_Table {
 	  add_screen_option('per_page',array('label' => __('Subscriptions') ));
 
 	  $this->row_actions =
-		array( __('Edit','gan') => add_query_arg(
+		array( __('Edit','ganpf') => add_query_arg(
 			array('page' => 'gan-database-add-products',
 			      'mode' => 'edit'),
 			admin_url('admin.php')),
-		       __('View','gan') => add_query_arg(
+		       __('View','ganpf') => add_query_arg(
 			array('page' => 'gan-database-add-products',
 			      'mode' => 'view'),
 			admin_url('admin.php')),
-		       __('Delete','gan') => add_query_arg(
+		       __('Delete','ganpf') => add_query_arg(
 			array('page' => 'gan-database-products',
 			      'action' => 'delete'),
 			admin_url('admin.php')),
-		       __('Import','gan') => add_query_arg(
+		       __('Import','ganpf') => add_query_arg(
 			array('page' => 'gan-database-products',
 			      'action' => 'import'),
 			admin_url('admin.php')) );
@@ -49,9 +88,9 @@ class GAN_Products_List extends WP_List_Table {
 	function get_columns() {
 		return array (
 			'cb' => '<input type="checkbox" />',
-			'MerchantID' => __('Advertiser','gan'),
-			'zipfilepath' => __('Zip File Path','gan'),
-			'dailyimport' => __('Daily Import?','gan'));
+			'MerchantID' => __('Merchant ID','ganpf'),
+			'zipfilepath' => __('Zip File Path','ganpf'),
+			'dailyimport' => __('Daily Import?','ganpf'));
 	}
 
 	function get_items_per_page ($option, $default = 20) {
@@ -65,12 +104,12 @@ class GAN_Products_List extends WP_List_Table {
 	}	
 	function check_permissions() {
 	  if (!current_user_can('manage_options')) {
-	    wp_die( __('You do not have sufficient permissions to access this page.','gan') );
+	    wp_die( __('You do not have sufficient permissions to access this page.','ganpf') );
 	  }
 	}
 	function get_bulk_actions() {
-	  return array ('delete' => __('Delete','gan'),
-			'import' => __('Import','gan') );
+	  return array ('delete' => __('Delete','ganpf'),
+			'import' => __('Import','ganpf') );
 	}
 	function get_column_info() {
 	  if ( isset($this->_column_headers) ) {return $this->_column_headers;}
@@ -84,7 +123,8 @@ class GAN_Products_List extends WP_List_Table {
 	  return '<input type="checkbox" name="checked[]" value="'.$item->id.'" />';
 	}
 	function column_MerchantID($item) {
-	  echo GAN_Database::get_merch_name($item->MerchantID);
+	  //echo GAN_Database::get_merch_name($item->MerchantID);
+	  echo $item->MerchantID;
 	  echo '<br />';
 	  $option = str_replace( '-', '_', 
 				get_current_screen()->id . '_per_page' );
@@ -175,14 +215,11 @@ class GAN_Products {
 	var $viewid   = 0;
 	var $viewitem;
 
-	var $gan;
-
 	var $prod_list = '';
 
 	var $main_screen;
 
-	function __construct($thegan) {
-	  $this->gan = $thegan;
+	function __construct() {
 	  GAN_Products::make_prodsub_table();
 
 	  add_action('admin_menu', array($this,'admin_menu'));
@@ -218,28 +255,34 @@ a.gan_prod_prodlink {
 	  add_action('wp_gan_products_batchrun',array('GAN_Products','run_batch'));
 	}
 	function admin_menu() {
-	  $screen_id = add_menu_page( __('GAN Product Database','gan'), 
-					__('GAN Product DB','gan'), 
+	  $screen_id = add_menu_page( __('GAN Product Database','ganpf'), 
+					__('GAN Product DB','ganpf'), 
 					'manage_options',
 					'gan-database-products', 
 					array($this,'admin_product_subscriptions'),
-					GAN_PLUGIN_IMAGE_URL.'/GAN_prod_menu.png');
+					GANPF_PLUGIN_IMAGE_URL.'/GAN_prod_menu.png');
 	  add_action("load-$screen_id",array($this,init_prod_list_class));
 	  //$this->add_contentualhelp($screen_id,'gan-database-products');
 	  $screen_id = add_submenu_page( 'gan-database-products', 
-					__('Add new GAN Product Subscriptions', 'gan'),
-					__('Add new','gan'),
+					__('Add new GAN Product Subscriptions', 'ganpf'),
+					__('Add new','ganpf'),
 					'manage_options', 
 					'gan-database-add-products',
 					array($this,'admin_product_add_subscriptions'));
 	  //$this->add_contentualhelp($screen_id,'gan-database-add-products');
 	  $screen_id = add_submenu_page( 'gan-database-products', 
-					__('Configure GAN Product Subscriptions', 'gan'),
-					__('Configure','gan'),
+					__('Configure GAN Product Subscriptions', 'ganpf'),
+					__('Configure','ganpf'),
 					'manage_options', 
 					'gan-database-configure-products',
 					array($this,'admin_product_configure_subscriptions'));
 	  //$this->add_contentualhelp($screen_id,'gan-database-configure-products');
+	  $screen_id = add_submenu_page( 'gan-database-products',
+					__('GAN Product Subscriptions Help', 'ganpf'),
+					__('Help','ganpf'),
+					'manage_options', 
+					'gan-productfeed-help',
+					array($this,'admin_product_feed_help'));
 	}
 
 	function init_prod_list_class() {
@@ -254,15 +297,15 @@ a.gan_prod_prodlink {
 	  $message = $this->prod_list->prepare_items();
 	  /* Head of page, filter and screen options. */
 	  ?><div class="wrap"><div id="icon-gan-prod" class="icon32"><br /></div>
-	    <h2><?php _e('GAN Product Subscriptions','gan'); ?> <a href="<?php
+	    <h2><?php _e('GAN Product Subscriptions','ganpf'); ?> <a href="<?php
                 echo add_query_arg(
                    array('page' => 'gan-database-add-products',
                          'mode' => 'add',
                          'id' => false));
-                ?>" class="button add-new-h2"><?php _e('Add New','gan');
+                ?>" class="button add-new-h2"><?php _e('Add New','ganpf');
                 ?></a><?php
-			$this->gan->InsertVersion(); ?></h2>
-	    <?php $this->gan->PluginSponsor(); ?>
+			$this->InsertVersion(); ?></h2>
+	    <?php $this->PluginSponsor(); ?>
 	    <?php if ($message != '') {
 		?><div id="message" class="update fade"><?php echo $message; ?></div><?php
 		} ?>
@@ -307,9 +350,9 @@ a.gan_prod_prodlink {
 	  $message = $this->prepare_one_item();
 	  ?><div class="wrap"><div id="<?php echo $this->add_item_icon(); ?>" class="icon32"><br />
 	    </div><h2><?php echo $this->add_item_h2(); ?><?php   
-				     $this->gan->InsertVersion(); ?></h2>
-	    <?php $this->gan->PluginSponsor(); 
-		  $this->gan->InsertH2AffiliateLoginButton(); ?>
+				     $this->InsertVersion(); ?></h2>
+	    <?php $this->PluginSponsor(); 
+		  $this->InsertH2AffiliateLoginButton(); ?>
 	    <?php if ($message != '') {
 		?><div id="message" class="update fade"><?php echo $message; ?></div><?php
 		} ?>
@@ -409,14 +452,14 @@ a.gan_prod_prodlink {
 				  " WHERE ID = %d",$id);
 	    $wpdb->query($sql);
 	    $answer .= '<p>'.
-		sprintf(__('%s product subscription deleted.','gan'),
-			GAN_Database::get_merch_name($item->MerchantID)).
+		sprintf(__('%s product subscription deleted.','ganpf'),
+			/*GAN_Database::get_merch_name(*/$item->MerchantID/*)*/).
 		'</p>';
 	  } else {
 	    $answer .= '<p>'.
-		sprintf(__('%d pending posts to be deleted for %s.','gan'),
+		sprintf(__('%d pending posts to be deleted for %s.','ganpf'),
 			   $q->found_posts,
-			   GAN_Database::get_merch_name($item->MerchantID)).
+			   /*GAN_Database::get_merch_name(*/$item->MerchantID/*)*/).
 		'</p>';
 	  }
 	  return $answer;
@@ -424,12 +467,12 @@ a.gan_prod_prodlink {
 	function checkiteminform($id) {
 	  $result = '';
 	  if ( empty($_REQUEST['MerchantID']) ) {
-	    $result .= '<p>'.__('Advertiser missing.','gan').'</p>';
+	    $result .= '<p>'.__('Advertiser missing.','ganpf').'</p>';
 	  } else if ($id != GAN_Products::find_prod_merchid($_REQUEST['MerchantID'])) {
-	    $result .= '<p>'.__('Duplicate Advertiser.','gan').'</p>';
+	    $result .= '<p>'.__('Duplicate Advertiser.','ganpf').'</p>';
 	  }
 	  if ( empty($_REQUEST['zipfilepath']) ) {
-	    $result .= '<p>'.__('Zip File Path missing.','gan').'</p>';
+	    $result .= '<p>'.__('Zip File Path missing.','ganpf').'</p>';
 	  }
 	  return $result;
 	}
@@ -456,14 +499,15 @@ a.gan_prod_prodlink {
 	  if ($this->viewmode != 'add') {
 	    ?><input type="hidden" name="id" value="<?php echo $this->viewid; ?>" /><?php
 	  }
-	  $GANMerchants = GAN_Database::get_merchants();
+	  /*$GANMerchants = GAN_Database::get_merchants();*/
+	  $GANMerchants = GAN_Products::get_merchants();
 	  ?><table class="form-table">
 	    <tr valign="top">
-		<th scope="row"><label for="GAN-MerchantID" style="width:20%;"><?php _e('Advertiser:','gan'); ?></label></th>
+		<th scope="row"><label for="GAN-MerchantID" style="width:20%;"><?php _e('Merchant ID:','ganpf'); ?></label></th>
 		<td><?php 
 		    if ($this->viewmode == 'view') {
 		    ?><input id="GAN-MerchantID"
-			   value="<?php echo GAN_Database::get_merch_name($this->viewitem->MerchantID); ?>"
+			   value="<?php echo /*GAN_Database::get_merch_name(*/$this->viewitem->MerchantID/*)*/; ?>"
 			   name="MerchantID"
 			   style="width:75%;"
 			   readonly="readonly" /><?php
@@ -471,7 +515,7 @@ a.gan_prod_prodlink {
 				style="width:75%;"<?php if ($this->viewmode == 'view') echo ' readonly="readonly"'; ?>>
 		    <option value="" <?php
 			if ($this->viewitem->MerchantID == "")  echo 'selected="selected"';
-			?>><?php _e('-- Select a Merchant --','gan'); ?></option><?php
+			?>><?php _e('-- Select a Merchant --','ganpf'); ?></option><?php
 		    foreach ((array)$GANMerchants as $GANMerchant) {
 		      ?><option value="<?php echo $GANMerchant['MerchantID']; ?>" <?php
 		      if ($this->viewitem->MerchantID == $GANMerchant['MerchantID'] )
@@ -481,13 +525,13 @@ a.gan_prod_prodlink {
 		    }
 		  ?></select><?php } ?></td></tr>
 	    <tr valign="top">
-		<th scope="row"><label for="GAN-zipfilepath" style="width:20%;"><?php _e('Zip File Path:','gan'); ?></label></th>
+		<th scope="row"><label for="GAN-zipfilepath" style="width:20%;"><?php _e('Zip File Path:','ganpf'); ?></label></th>
 		<td><input id="GAN-zipfilepath"
 			   value="<?php echo $this->viewitem->zipfilepath; ?>" 
 			   name="zipfilepath"
 			   style="width:75%;"<?php if ($this->viewmode == 'view') echo ' readonly="readonly"'; ?> /></td></tr>
 	    <tr valign="top">
-		<th scope="row"><label for="GAN-dailyimport"><?php _e('Import Daily?','gan'); ?></label></th>
+		<th scope="row"><label for="GAN-dailyimport"><?php _e('Import Daily?','ganpf'); ?></label></th>
 		<td><input class="checkbox" type="checkbox"
 			<?php checked( $this->viewitem->dailyimport, true ); ?>
 			id="GAN-dailyimport" name="dailyimport" value="1"
@@ -496,13 +540,13 @@ a.gan_prod_prodlink {
 	  <p>
 		<?php switch($this->viewmode) {
 			case 'add':
-				?><input type="submit" name="addprod" class="button-primary" value="<?php _e('Add Product Subscription','gan'); ?>" /><?php
+				?><input type="submit" name="addprod" class="button-primary" value="<?php _e('Add Product Subscription','ganpf'); ?>" /><?php
 				break;
 			case 'edit':
-				?><input type="submit" name="updateprod" class="button-primary" value="<?php _e('Update Product Subscription','gan'); ?>" /><?php
+				?><input type="submit" name="updateprod" class="button-primary" value="<?php _e('Update Product Subscription','ganpf'); ?>" /><?php
 				break;
 		      } ?>
-		<a href="<?php echo $returnURL; ?>" class="button-primary"><?php _e('Return','gan'); ?></a>
+		<a href="<?php echo $returnURL; ?>" class="button-primary"><?php _e('Return','ganpf'); ?></a>
 	  </p><?php
 	}
 	function add_item_icon() {
@@ -514,14 +558,14 @@ a.gan_prod_prodlink {
 	}
 	function add_item_h2() {
 	  switch ($this->viewmode) {
-	    case 'add': return __('Add Product Subscription','gan');
-	    case 'edit': return __('Edit Product Subscription','gan');
-	    case 'view': return __('View Product Subscription','gan');
+	    case 'add': return __('Add Product Subscription','ganpf');
+	    case 'edit': return __('Edit Product Subscription','ganpf');
+	    case 'view': return __('View Product Subscription','ganpf');
 	  }
 	}
 	function check_permissions() {
 	  if (!current_user_can('manage_options')) {
-	    wp_die( __('You do not have sufficient permissions to access this page.','gan') );
+	    wp_die( __('You do not have sufficient permissions to access this page.','ganpf') );
 	  }
 	}
 	function prepare_one_item() {
@@ -532,8 +576,8 @@ a.gan_prod_prodlink {
 	    $item    = $this->getitemfromform();
 	    if ($message == '') {
 	      $newid = GAN_Products::insert_prod($item);
-	      $message = '<p>'.sprintf(__('%s inserted with id %d.','gan'),
-					  GAN_Database::get_merch_name($item->MerchantID),$newid);
+	      $message = '<p>'.sprintf(__('%s inserted with id %d.','ganpf'),
+					  /*GAN_Database::get_merch_name(*/$item->MerchantID/*)*/,$newid);
 	      $this->viewmode = 'edit';
 	      $this->viewid   = $newid;
 	      $this->viewitem = $item;
@@ -548,8 +592,8 @@ a.gan_prod_prodlink {
 	    $item->id = $_REQUEST['id'];
 	    if ($message == '') {
 	      GAN_Products::update_prod($item);
-	      $message = '<p>'.sprintf(__('%s updated.','gan'),
-					GAN_Database::get_merch_name($item->MerchantID)).'</p>';
+	      $message = '<p>'.sprintf(__('%s updated.','ganpf'),
+					/*GAN_Database::get_merch_name(*/$item->MerchantID/*)*/).'</p>';
 	    }
 	    $this->viewmode = 'edit';
 	    $this->viewid   = $item->id;
@@ -582,7 +626,7 @@ a.gan_prod_prodlink {
 	  //must check that the user has the required capability 
 	  if (!current_user_can('manage_options'))
 	  {
-	    wp_die( __('You do not have sufficient permissions to access this page.', 'gan') );
+	    wp_die( __('You do not have sufficient permissions to access this page.', 'ganpf') );
 	  }
 	  if ( isset($_REQUEST['saveoptions']) ) {
 	    $products_shoppress = $_REQUEST['gan_products_shoppress'];
@@ -620,7 +664,7 @@ a.gan_prod_prodlink {
 	    update_option('wp_gan_products_matchcols',$products_matchcols);
 	    $products_matchpattern = $_REQUEST['gan_products_matchpattern'];
 	    update_option('wp_gan_products_matchpattern',$products_matchpattern);
-	    ?><div id="message"class="updated fade"><p><?php _e('Options Saved','gan'); ?></p></div><?php
+	    ?><div id="message"class="updated fade"><p><?php _e('Options Saved','ganpf'); ?></p></div><?php
 	  }
 	  /* Head of page, filter and screen options. */
 	  $products_shoppress = get_option('wp_gan_products_shoppress');
@@ -634,34 +678,34 @@ a.gan_prod_prodlink {
 	  $products_matchcols = explode(',',get_option('wp_gan_products_matchcols'));
 	  $products_matchpattern = get_option('wp_gan_products_matchpattern');
 	  $products_batchqueue = get_option('wp_gan_products_batchqueue');
-	  ?><div class="wrap"><div id="icon-gan-prod-options" class="icon32"><br /></div><h2><?php _e('Configure Product Options','gan'); ?><?php $this->gan->InsertVersion(); ?></h2>
-	    <?php $this->gan->PluginSponsor(); ?>
+	  ?><div class="wrap"><div id="icon-gan-prod-options" class="icon32"><br /></div><h2><?php _e('Configure Product Options','ganpf'); ?><?php $this->InsertVersion(); ?></h2>
+	    <?php $this->PluginSponsor(); ?>
 	    <form method="post" action="">
 	    	<input type="hidden" name="page" value="gan-database-configure-products" />
 		<table class="form-table">
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_shoppress" style="width:20%;"><?php _e('Import for Shopper Press?','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_shoppress" style="width:20%;"><?php _e('Import for Shopper Press?','ganpf'); ?></label></th>
 		    <td><input type="radio" name="gan_products_shoppress" value="yes"<?php
 				if ($products_shoppress == 'yes') {
 				  echo ' checked="checked" ';
 				} 
-			?> /><?php _e('Yes','gan'); ?>&nbsp;<input type="radio" name="gan_products_shoppress" value="no"<?php
+			?> /><?php _e('Yes','ganpf'); ?>&nbsp;<input type="radio" name="gan_products_shoppress" value="no"<?php
 				if ($products_shoppress == 'no') {
 				  echo ' checked="checked" ';
 				}
-			?> /><?php _e('No','gan'); ?></td></tr>
+			?> /><?php _e('No','ganpf'); ?></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_postformat" style="width:20%;"><?php _e('Post format (for other than Shopper Press)','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_postformat" style="width:20%;"><?php _e('Post format (for other than Shopper Press)','ganpf'); ?></label></th>
 		    <td><textarea name="gan_products_postformat" 
 				  id="gan_products_postformat"
 				  rows="5" cols="40"><?php echo stripslashes($products_postformat); ?></textarea></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_css" style="width:20%;"><?php _e('CSS for posts (for other than Shopper Press)','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_css" style="width:20%;"><?php _e('CSS for posts (for other than Shopper Press)','ganpf'); ?></label></th>
 		    <td><textarea name="gan_products_css" 
 				  id="gan_products_css"
 				  rows="5" cols="40"><?php echo stripslashes($products_css); ?></textarea></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_customfields" style="width:20%;"><?php _e('Custom Fields (for other than Shopper Press)','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_customfields" style="width:20%;"><?php _e('Custom Fields (for other than Shopper Press)','ganpf'); ?></label></th>
 		    <td><?php
 			$cols = 0;
 			foreach (explode(',',GAN_PROD_HEADERS) as $fieldname) {
@@ -679,7 +723,7 @@ a.gan_prod_prodlink {
 			    }
 			} ?></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_category_mode" style="width:20%;"><?php _e('Category Mode:','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_category_mode" style="width:20%;"><?php _e('Category Mode:','ganpf'); ?></label></th>
 		    <td style="width:75%;">
 		        <!-- <?php echo "products_category_mode = $products_category_mode"; ?> -->
 			<input id="gan_products_category_mode"
@@ -689,14 +733,14 @@ a.gan_prod_prodlink {
 			       <?php if ($products_category_mode == 'category_tree') echo 'checked="checked"'; ?>
 			       />Category Tree<br />
 			&nbsp;&nbsp;<label for="gan_products_category_treesep"><?php
-			  _e('Tree branch separator:','gan'); 
+			  _e('Tree branch separator:','ganpf'); 
 			?></label>&nbsp;<input id="gan_products_category_treesep"
 					 name="gan_products_category_treesep"
 					 type="text" size="1" maxlength="1" 
 					 value="<?php 
 					echo $products_category_treesep; 
 			?>" />&nbsp;<label for="gan_products_category_maxtreedepth"><?php
-			  _e('Max tree depth (0 means unlimited)','gan');
+			  _e('Max tree depth (0 means unlimited)','ganpf');
 			?></label>&nbsp;<input 
 				    id="gan_products_category_maxtreedepth"
 			 	    name="gan_products_category_maxtreedepth"
@@ -723,7 +767,7 @@ a.gan_prod_prodlink {
 			       <?php if ($products_category_mode == 'merchant') echo 'checked="checked"'; ?>
 			       />Merchant as Category</td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_tagheaders" style="width:20%;"><?php _e('Tag Columns','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_tagheaders" style="width:20%;"><?php _e('Tag Columns','ganpf'); ?></label></th>
 		    <td><?php
 			$cols = 0;
 			foreach (explode(',',GAN_PROD_TAGABLE_HEADERS) as $fieldname) {
@@ -741,7 +785,7 @@ a.gan_prod_prodlink {
 			    }
 			} ?></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_matchcols" style="width:20%;"><?php _e('Matchable Columns','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_matchcols" style="width:20%;"><?php _e('Matchable Columns','ganpf'); ?></label></th>
 		    <td><?php
 			$cols = 0;
 			foreach (explode(',',GAN_PROD_TAGABLE_HEADERS) as $fieldname) {
@@ -759,14 +803,14 @@ a.gan_prod_prodlink {
 			    }
 			} ?></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_matchpattern" style="width:20%;"><?php _e("Column Match Pattern (don't forget the delimiters!):",'gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_matchpattern" style="width:20%;"><?php _e("Column Match Pattern (don't forget the delimiters!):",'ganpf'); ?></label></th>
 		    <td><input id="gan_products_matchpattern"
 		    	       value="<?php echo $products_matchpattern; ?>"
 			       name="gan_products_matchpattern"
 			       style="width:75%;" /><br />
-			<a href="http://us.php.net/manual/en/reference.pcre.pattern.syntax.php"><?php _e('Pattern Syntax','gan'); ?></a></td></tr>
+			<a href="http://us.php.net/manual/en/reference.pcre.pattern.syntax.php"><?php _e('Pattern Syntax','ganpf'); ?></a></td></tr>
 		  <tr valign="top">
-		    <th scope="row"><label for="gan_products_batchqueue" style="width:20%;"><?php _e('Batch Queue:','gan'); ?></label></th>
+		    <th scope="row"><label for="gan_products_batchqueue" style="width:20%;"><?php _e('Batch Queue:','ganpf'); ?></label></th>
 		    <td><input id="gan_products_batchqueue"
 		    	       value="<?php echo $products_batchqueue; ?>"
 			       name="gan_products_batchqueue"
@@ -774,7 +818,7 @@ a.gan_prod_prodlink {
 			       readonly="readonly" /></td></tr>
 		</table>
 		<p>
-			<input type="submit" name="saveoptions" class="button-primary" value="<?php _e('Save Options','gan'); ?>" />
+			<input type="submit" name="saveoptions" class="button-primary" value="<?php _e('Save Options','ganpf'); ?>" />
 		</p></form></div><?php
 	}
 	function wp_head () {
@@ -784,14 +828,14 @@ a.gan_prod_prodlink {
 	  }
 	}
 	function admin_head () {
-	  $path = GAN_PLUGIN_CSS_URL . '/GAN_Prod_admin.css';
-	  echo '<link rel="stylesheet" type="text/css" href="' . $path . '?version='.GAN_VERSION.'" />';
+	  $path = GANPF_PLUGIN_CSS_URL . '/GAN_Prod_admin.css';
+	  echo '<link rel="stylesheet" type="text/css" href="' . $path . '?version='.GANPF_VERSION.'" />';
 	}
 	function wp_dashboard_setup () {
 	}
 	static function import_products($id,$skip=0) {
 	  $item = GAN_Products::get_prod($id);
-	  $Advertiser = GAN_Database::get_merch_name($item->MerchantID);
+	  $Advertiser = /*GAN_Database::get_merch_name(*/$item->MerchantID/*)*/;
 	  $products_shoppress = get_option('wp_gan_products_shoppress');
 	  $products_postformat = get_option('wp_gan_products_postformat');
 	  $products_customfields = explode(',',get_option('wp_gan_products_customfields'));
@@ -852,9 +896,9 @@ a.gan_prod_prodlink {
 	    }
 	    fclose($fp);
 	    $zip->close();
-	    return sprintf(__('%d Products imported from %s.','gan'),$count,$item->zipfilepath);
+	    return sprintf(__('%d Products imported from %s.','ganpf'),$count,$item->zipfilepath);
 	  } else {
- 	    return sprintf(__('Failed to open %s: %d.','gan'),$item->zipfilepath,$res);
+ 	    return sprintf(__('Failed to open %s: %d.','ganpf'),$item->zipfilepath,$res);
 	  }
 	}
 	static function import_products_as_shoppress($rowobj,$MerchantID,
@@ -1104,9 +1148,42 @@ a.gan_prod_prodlink {
 	    }
 	  }
 	  file_put_contents("php://stderr","*** GAN_Products::delete_products: count = $count\n");
-	  return sprintf(__('%d product posts deleted from %s.','gan'),
-			 $count,GAN_Database::get_merch_name($item->MerchantID) );
+	  return sprintf(__('%d product posts deleted from %s.','ganpf'),
+			 $count,/*GAN_Database::get_merch_name(*/$item->MerchantID/*)*/ );
+	}
+	static function get_merchants()
+	{
+	   global $wpdb;
+	   return $wpdb->get_col("SELECT MerchantID FROM ".GAN_PRODUCT_SUBSCRIPTIONS_TABLE);
+	}
+
+	function InsertVersion() {
+	  ?><span id="gan_version"><?php printf(__('Version: %s','gan'),GANPF_VERSION) ?></span><?php
+	}
+	function InsertDashVersion() {
+	  ?><span id="gan_dash_version"><?php printf(__('Version: %s','gan'),GANPF_VERSION) ?></span><?php
+	}
+	function InsertPayPalDonateButton() {
+	  ?><div id="gan_donate"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><?php _e('Donate to Google Affiliate Network plugin software effort.','gan'); ?><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="B34MW48SVGBYE"><input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/scr/pixel.gif" width="1" height="1"></form></div><br clear="all" /><?php
+	}
+
+	function PluginSponsor() {
+	  /* Plugin Sponsors is closed, disable it, and always display 
+	     the PayPal Donate Button. */
+	  $this->InsertPayPalDonateButton();
+	  $helppageURL = add_query_arg(array('page' => 'gan-productfeed-help'))
+	  ?><div id="gan_supportSmall"><a href="<?php echo $helppageURL.'#SupportGAN'; ?>"><?php _e('More ways to support the GAN project.','gan'); ?></a></div><br clear="all" /><?php
+	}
+	function InsertH2AffiliateLoginButton() {
+	  ?><p><a target="_blank" href="http://www.google.com/ads/affiliatenetwork/" class="button"><?php _e('Login into Google Affiliate Network','gan'); ?></a></p><?php
+	}
+	function admin_product_feed_help() {
+	  require_once(GANPF_DIR.'/GANPF_Help.php');
 	}
 }
 
-?>
+/* Create an instanance of the plugin */
+global $ganpf_plugin;
+$ganpf_plugin = new GAN_Products;
+
+
