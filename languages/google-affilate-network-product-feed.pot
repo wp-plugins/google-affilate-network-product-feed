@@ -1,0 +1,254 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/google-affilate-network-"
+"product-feed\n"
+"POT-Creation-Date: 2012-02-15 15:07:12+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: GANPF_Help.php:2
+msgid "Help Using the Google Affiliate Network Product Feed Plugin"
+msgstr ""
+
+#: GANPF_Help.php:10 GAN_Products.php:1167
+msgid "Donate to Google Affiliate Network plugin software effort."
+msgstr ""
+
+#: GAN_Products.php:64
+msgid "Subscriptions"
+msgstr ""
+
+#: GAN_Products.php:67
+msgid "Edit"
+msgstr ""
+
+#: GAN_Products.php:71
+msgid "View"
+msgstr ""
+
+#: GAN_Products.php:75 GAN_Products.php:111
+msgid "Delete"
+msgstr ""
+
+#: GAN_Products.php:79 GAN_Products.php:112
+msgid "Import"
+msgstr ""
+
+#: GAN_Products.php:91
+msgid "Merchant ID"
+msgstr ""
+
+#: GAN_Products.php:92
+msgid "Zip File Path"
+msgstr ""
+
+#: GAN_Products.php:93
+msgid "Daily Import?"
+msgstr ""
+
+#: GAN_Products.php:107 GAN_Products.php:568 GAN_Products.php:629
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: GAN_Products.php:258
+msgid "GAN Product Database"
+msgstr ""
+
+#: GAN_Products.php:259
+msgid "GAN Product DB"
+msgstr ""
+
+#: GAN_Products.php:267
+msgid "Add new GAN Product Subscriptions"
+msgstr ""
+
+#: GAN_Products.php:268
+msgid "Add new"
+msgstr ""
+
+#: GAN_Products.php:274
+msgid "Configure GAN Product Subscriptions"
+msgstr ""
+
+#: GAN_Products.php:275
+msgid "Configure"
+msgstr ""
+
+#: GAN_Products.php:281
+msgid "GAN Product Subscriptions Help"
+msgstr ""
+
+#: GAN_Products.php:282
+msgid "Help"
+msgstr ""
+
+#: GAN_Products.php:300
+msgid "GAN Product Subscriptions"
+msgstr ""
+
+#: GAN_Products.php:305
+msgid "Add New"
+msgstr ""
+
+#: GAN_Products.php:455
+msgid "%s product subscription deleted."
+msgstr ""
+
+#: GAN_Products.php:460
+msgid "%d pending posts to be deleted for %s."
+msgstr ""
+
+#: GAN_Products.php:470
+msgid "Advertiser missing."
+msgstr ""
+
+#: GAN_Products.php:472
+msgid "Duplicate Advertiser."
+msgstr ""
+
+#: GAN_Products.php:475
+msgid "Zip File Path missing."
+msgstr ""
+
+#: GAN_Products.php:506
+msgid "Merchant ID:"
+msgstr ""
+
+#: GAN_Products.php:518
+msgid "-- Select a Merchant --"
+msgstr ""
+
+#: GAN_Products.php:528
+msgid "Zip File Path:"
+msgstr ""
+
+#: GAN_Products.php:534
+msgid "Import Daily?"
+msgstr ""
+
+#: GAN_Products.php:543 GAN_Products.php:561
+msgid "Add Product Subscription"
+msgstr ""
+
+#: GAN_Products.php:546
+msgid "Update Product Subscription"
+msgstr ""
+
+#: GAN_Products.php:549
+msgid "Return"
+msgstr ""
+
+#: GAN_Products.php:562
+msgid "Edit Product Subscription"
+msgstr ""
+
+#: GAN_Products.php:563
+msgid "View Product Subscription"
+msgstr ""
+
+#: GAN_Products.php:579
+msgid "%s inserted with id %d."
+msgstr ""
+
+#: GAN_Products.php:595
+msgid "%s updated."
+msgstr ""
+
+#: GAN_Products.php:667
+msgid "Options Saved"
+msgstr ""
+
+#: GAN_Products.php:681
+msgid "Configure Product Options"
+msgstr ""
+
+#: GAN_Products.php:687
+msgid "Import for Shopper Press?"
+msgstr ""
+
+#: GAN_Products.php:692
+msgid "Yes"
+msgstr ""
+
+#: GAN_Products.php:696
+msgid "No"
+msgstr ""
+
+#: GAN_Products.php:698
+msgid "Post format (for other than Shopper Press)"
+msgstr ""
+
+#: GAN_Products.php:703
+msgid "CSS for posts (for other than Shopper Press)"
+msgstr ""
+
+#: GAN_Products.php:708
+msgid "Custom Fields (for other than Shopper Press)"
+msgstr ""
+
+#: GAN_Products.php:726
+msgid "Category Mode:"
+msgstr ""
+
+#: GAN_Products.php:736
+msgid "Tree branch separator:"
+msgstr ""
+
+#: GAN_Products.php:743
+msgid "Max tree depth (0 means unlimited)"
+msgstr ""
+
+#: GAN_Products.php:770
+msgid "Tag Columns"
+msgstr ""
+
+#: GAN_Products.php:788
+msgid "Matchable Columns"
+msgstr ""
+
+#: GAN_Products.php:806
+msgid "Column Match Pattern (don't forget the delimiters!):"
+msgstr ""
+
+#: GAN_Products.php:811
+msgid "Pattern Syntax"
+msgstr ""
+
+#: GAN_Products.php:813
+msgid "Batch Queue:"
+msgstr ""
+
+#: GAN_Products.php:821
+msgid "Save Options"
+msgstr ""
+
+#: GAN_Products.php:899
+msgid "%d Products imported from %s."
+msgstr ""
+
+#: GAN_Products.php:901
+msgid "Failed to open %s: %d."
+msgstr ""
+
+#: GAN_Products.php:1151
+msgid "%d product posts deleted from %s."
+msgstr ""
+
+#: GAN_Products.php:1161 GAN_Products.php:1164
+msgid "Version: %s"
+msgstr ""
+
+#: GAN_Products.php:1175
+msgid "More ways to support the GAN project."
+msgstr ""
+
+#: GAN_Products.php:1178
+msgid "Login into Google Affiliate Network"
+msgstr ""

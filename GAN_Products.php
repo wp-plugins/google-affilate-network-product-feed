@@ -253,6 +253,8 @@ a.gan_prod_prodlink {
 	  add_option('wp_gan_products_matchpattern','');
 	  add_option('wp_gan_products_batchqueue',"");
 	  add_action('wp_gan_products_batchrun',array('GAN_Products','run_batch'));
+	  load_plugin_textdomain('ganpf',GANPF_PLUGIN_URL.'/languages/',
+					  basename(GANPF_DIR).'/languages/');
 	}
 	function admin_menu() {
 	  $screen_id = add_menu_page( __('GAN Product Database','ganpf'), 

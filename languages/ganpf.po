@@ -1,0 +1,254 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/google-affilate-network-"
+"product-feed\n"
+"POT-Creation-Date: 2012-02-15 15:07:12+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: GANPF_Help.php:2
+msgid "Help Using the Google Affiliate Network Product Feed Plugin"
+msgstr "Help Using the Google Affiliate Network Product Feed Plugin"
+
+#: GANPF_Help.php:10 GAN_Products.php:1167
+msgid "Donate to Google Affiliate Network plugin software effort."
+msgstr "Donate to Google Affiliate Network plugin software effort."
+
+#: GAN_Products.php:64
+msgid "Subscriptions"
+msgstr "Subscriptions"
+
+#: GAN_Products.php:67
+msgid "Edit"
+msgstr "Edit"
+
+#: GAN_Products.php:71
+msgid "View"
+msgstr "View"
+
+#: GAN_Products.php:75 GAN_Products.php:111
+msgid "Delete"
+msgstr "Delete"
+
+#: GAN_Products.php:79 GAN_Products.php:112
+msgid "Import"
+msgstr "Import"
+
+#: GAN_Products.php:91
+msgid "Merchant ID"
+msgstr "Merchant ID"
+
+#: GAN_Products.php:92
+msgid "Zip File Path"
+msgstr "Zip File Path"
+
+#: GAN_Products.php:93
+msgid "Daily Import?"
+msgstr "Daily Import?"
+
+#: GAN_Products.php:107 GAN_Products.php:568 GAN_Products.php:629
+msgid "You do not have sufficient permissions to access this page."
+msgstr "You do not have sufficient permissions to access this page."
+
+#: GAN_Products.php:258
+msgid "GAN Product Database"
+msgstr "GAN Product Database"
+
+#: GAN_Products.php:259
+msgid "GAN Product DB"
+msgstr "GAN Product DB"
+
+#: GAN_Products.php:267
+msgid "Add new GAN Product Subscriptions"
+msgstr "Add new GAN Product Subscriptions"
+
+#: GAN_Products.php:268
+msgid "Add new"
+msgstr "Add new"
+
+#: GAN_Products.php:274
+msgid "Configure GAN Product Subscriptions"
+msgstr "Configure GAN Product Subscriptions"
+
+#: GAN_Products.php:275
+msgid "Configure"
+msgstr "Configure"
+
+#: GAN_Products.php:281
+msgid "GAN Product Subscriptions Help"
+msgstr "GAN Product Subscriptions Help"
+
+#: GAN_Products.php:282
+msgid "Help"
+msgstr "Help"
+
+#: GAN_Products.php:300
+msgid "GAN Product Subscriptions"
+msgstr "GAN Product Subscriptions"
+
+#: GAN_Products.php:305
+msgid "Add New"
+msgstr "Add New"
+
+#: GAN_Products.php:455
+msgid "%s product subscription deleted."
+msgstr "%s product subscription deleted."
+
+#: GAN_Products.php:460
+msgid "%d pending posts to be deleted for %s."
+msgstr "%d pending posts to be deleted for %s."
+
+#: GAN_Products.php:470
+msgid "Advertiser missing."
+msgstr "Advertiser missing."
+
+#: GAN_Products.php:472
+msgid "Duplicate Advertiser."
+msgstr "Duplicate Advertiser."
+
+#: GAN_Products.php:475
+msgid "Zip File Path missing."
+msgstr "Zip File Path missing."
+
+#: GAN_Products.php:506
+msgid "Merchant ID:"
+msgstr "Merchant ID:"
+
+#: GAN_Products.php:518
+msgid "-- Select a Merchant --"
+msgstr "-- Select a Merchant --"
+
+#: GAN_Products.php:528
+msgid "Zip File Path:"
+msgstr "Zip File Path:"
+
+#: GAN_Products.php:534
+msgid "Import Daily?"
+msgstr "Import Daily?"
+
+#: GAN_Products.php:543 GAN_Products.php:561
+msgid "Add Product Subscription"
+msgstr "Add Product Subscription"
+
+#: GAN_Products.php:546
+msgid "Update Product Subscription"
+msgstr "Update Product Subscription"
+
+#: GAN_Products.php:549
+msgid "Return"
+msgstr "Return"
+
+#: GAN_Products.php:562
+msgid "Edit Product Subscription"
+msgstr "Edit Product Subscription"
+
+#: GAN_Products.php:563
+msgid "View Product Subscription"
+msgstr "View Product Subscription"
+
+#: GAN_Products.php:579
+msgid "%s inserted with id %d."
+msgstr "%s inserted with id %d."
+
+#: GAN_Products.php:595
+msgid "%s updated."
+msgstr "%s updated."
+
+#: GAN_Products.php:667
+msgid "Options Saved"
+msgstr "Options Saved"
+
+#: GAN_Products.php:681
+msgid "Configure Product Options"
+msgstr "Configure Product Options"
+
+#: GAN_Products.php:687
+msgid "Import for Shopper Press?"
+msgstr "Import for Shopper Press?"
+
+#: GAN_Products.php:692
+msgid "Yes"
+msgstr "Yes"
+
+#: GAN_Products.php:696
+msgid "No"
+msgstr "No"
+
+#: GAN_Products.php:698
+msgid "Post format (for other than Shopper Press)"
+msgstr "Post format (for other than Shopper Press)"
+
+#: GAN_Products.php:703
+msgid "CSS for posts (for other than Shopper Press)"
+msgstr "CSS for posts (for other than Shopper Press)"
+
+#: GAN_Products.php:708
+msgid "Custom Fields (for other than Shopper Press)"
+msgstr "Custom Fields (for other than Shopper Press)"
+
+#: GAN_Products.php:726
+msgid "Category Mode:"
+msgstr "Category Mode:"
+
+#: GAN_Products.php:736
+msgid "Tree branch separator:"
+msgstr "Tree branch separator:"
+
+#: GAN_Products.php:743
+msgid "Max tree depth (0 means unlimited)"
+msgstr "Max tree depth (0 means unlimited)"
+
+#: GAN_Products.php:770
+msgid "Tag Columns"
+msgstr "Tag Columns"
+
+#: GAN_Products.php:788
+msgid "Matchable Columns"
+msgstr "Matchable Columns"
+
+#: GAN_Products.php:806
+msgid "Column Match Pattern (don't forget the delimiters!):"
+msgstr "Column Match Pattern (don't forget the delimiters!):"
+
+#: GAN_Products.php:811
+msgid "Pattern Syntax"
+msgstr "Pattern Syntax"
+
+#: GAN_Products.php:813
+msgid "Batch Queue:"
+msgstr "Batch Queue:"
+
+#: GAN_Products.php:821
+msgid "Save Options"
+msgstr "Save Options"
+
+#: GAN_Products.php:899
+msgid "%d Products imported from %s."
+msgstr "%d Products imported from %s."
+
+#: GAN_Products.php:901
+msgid "Failed to open %s: %d."
+msgstr "Failed to open %s: %d."
+
+#: GAN_Products.php:1151
+msgid "%d product posts deleted from %s."
+msgstr "%d product posts deleted from %s."
+
+#: GAN_Products.php:1161 GAN_Products.php:1164
+msgid "Version: %s"
+msgstr "Version: %s"
+
+#: GAN_Products.php:1175
+msgid "More ways to support the GAN project."
+msgstr "More ways to support the GAN project."
+
+#: GAN_Products.php:1178
+msgid "Login into Google Affiliate Network"
+msgstr "Login into Google Affiliate Network"
